@@ -35,9 +35,15 @@ public class PostService {
     return null;
   }
 
-  public Post updatePost(Post post) {
-    if (validator.isValidPost(post)) {
-      postRepository.save(post);
+  public Post updatePost(Long id, Post post) {
+    Optional<Post> existingPost = postRepository.findById(id);
+    System.out.println(existingPost.get());
+    if (existingPost.isPresent()) {
+      Post existingPostReal = existingPost.get();
+      existingPostReal.setTitle(post.getTitle());
+      existingPostReal.setBody(post.getBody());
+      postRepository.save(existingPostReal);
+      return existingPostReal;
     }
     return null;
   }
