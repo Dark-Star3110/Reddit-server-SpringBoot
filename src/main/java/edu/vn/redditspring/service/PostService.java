@@ -1,6 +1,5 @@
 package edu.vn.redditspring.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import edu.vn.redditspring.model.Post;
 import edu.vn.redditspring.model.PostValidator;
+import edu.vn.redditspring.payload.PostRequest;
+import edu.vn.redditspring.payload.PostResponse;
 import edu.vn.redditspring.repository.PostRepository;
 
 @Service
@@ -23,9 +24,14 @@ public class PostService {
     return postRepository.findById(id).isPresent() ? postRepository.findById(id).get() : null;
   }
 
-  public List<Post> getAllPosts(Integer limit) {
-    return Optional.ofNullable(limit).map(value -> postRepository.findAll(PageRequest.of(0, value)).getContent())
-        .orElseGet(() -> postRepository.findAll());
+  public PostResponse getAllPosts(PostRequest postRequest) {
+    return Optional.ofNullable(postRequest.getTitle())
+        .map(value -> new PostResponse(postRepository.countAllByTitleLike(value),
+            postRepository.findAllByTitleLike(value,
+                PageRequest.of(postRequest.getCurrentPage(), postRequest.getLimit()))))
+        .orElseGet(() -> new PostResponse(postRepository.count(),
+            postRepository.findAll(PageRequest.of(postRequest.getCurrentPage(), postRequest.getLimit()))
+                .getContent()));
   }
 
   public Post addPost(Post post) {

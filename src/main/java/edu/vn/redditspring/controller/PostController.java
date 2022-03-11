@@ -1,6 +1,5 @@
 package edu.vn.redditspring.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.vn.redditspring.model.Post;
+import edu.vn.redditspring.payload.PostRequest;
+import edu.vn.redditspring.payload.PostResponse;
 import edu.vn.redditspring.payload.ResponsePayload;
 import edu.vn.redditspring.service.PostService;
 
@@ -27,10 +28,10 @@ public class PostController {
   @Autowired
   private PostService postService;
 
-  @GetMapping("/all-posts")
-  public List<Post> getAllPosts(@RequestParam(value = "limit", required = false) Integer limit) {
+  @PostMapping("/all-posts")
+  public PostResponse getAllPosts(@RequestBody PostRequest postRequest) {
     System.out.println("get all posts");
-    return postService.getAllPosts(limit);
+    return postService.getAllPosts(postRequest);
   }
 
   @GetMapping("/post/{id}")
