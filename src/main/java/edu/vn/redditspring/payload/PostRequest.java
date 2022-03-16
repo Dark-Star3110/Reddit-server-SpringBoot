@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class PostRequest {
   @Nullable
-  private String title;
+  private String query;
 
   @NotNull
   private int limit;
